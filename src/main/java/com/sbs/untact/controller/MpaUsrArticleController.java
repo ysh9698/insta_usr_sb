@@ -1,8 +1,5 @@
 package com.sbs.untact.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +12,7 @@ import com.sbs.untact.util.Util;
 
 @Controller
 public class MpaUsrArticleController {
+
 	@Autowired
 	private ArticleService articleService;
 
@@ -30,10 +28,7 @@ public class MpaUsrArticleController {
 			return new ResultData("F-2", "내용을 입력해주세요.");
 		}
 
-		int id = articleService.writeArticle(title, body);
-		Article article = articleService.getArticleById(id);
-
-		return new ResultData("S-1", id + "번 글이 작성되었습니다.", "article", article);
+		return articleService.writeArticle(title, body);
 	}
 
 	@RequestMapping("/mpaUsr/article/doModify")
@@ -45,20 +40,20 @@ public class MpaUsrArticleController {
 		}
 
 		if (Util.isEmpty(title)) {
-			return new ResultData("F-2", "내용을 입력해주세요.");
+			return new ResultData("F-2", "제목을 입력해주세요.");
 		}
 
 		if (Util.isEmpty(body)) {
 			return new ResultData("F-3", "내용을 입력해주세요.");
 		}
 
-		boolean modified = articleService.modifyArticle(id, title, body);
+		Article article = articleService.getArticleById(id);
 
-		if (modified == false) {
-			return new ResultData("F-1", id + "번 글이 존재하지 않습니다.", "id", id);
+		if (article == null) {
+			return new ResultData("F-4", "존재하지 않는 게시물 번호입니다.");
 		}
 
-		return new ResultData("S-1", id + "번 글이 수정되었습니다.", "article", articleService.getArticleById(id));
+		return articleService.modifyArticle(id, title, body);
 	}
 
 	@RequestMapping("/mpaUsr/article/doDelete")
@@ -68,13 +63,7 @@ public class MpaUsrArticleController {
 			return new ResultData("F-1", "번호를 입력해주세요.");
 		}
 
-		boolean deleted = articleService.deleteArticleById(id);
-
-		if (deleted == false) {
-			return new ResultData("F-1", id + "번 글이 존재하지 않습니다.", "id", id);
-		}
-
-		return new ResultData("S-1", id + "번 글이 삭제되었습니다.", "id", id);
+		return articleService.deleteArticleById(id);
 	}
 
 	@RequestMapping("/mpaUsr/article/getArticle")
