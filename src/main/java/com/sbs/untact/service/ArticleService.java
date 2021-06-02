@@ -37,7 +37,10 @@ public class ArticleService {
 	}
 
 	public ResultData writeArticle(String title, String body) {
-		int id = articleDao.writeArticle(title, body);
+		int boardId = 3; // 가짜 데이터
+		int memberId = 3; // 가짜 데이터
+		articleDao.writeArticle(boardId, memberId, title, body);
+		int id = 1; // 가짜 데이터
 
 		return new ResultData("S-1", "게시물이 작성되었습니다.", "id", id);
 	}
