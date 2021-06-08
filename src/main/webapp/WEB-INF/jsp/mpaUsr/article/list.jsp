@@ -4,5 +4,5 @@
 
 <c:set var="pageTitle" value="<span><i class='far fa-clipboard'></i></span> <span>${board.name} ARTICLE LIST</span>" />
 
-<%@ include file="../common/head.jspf"%>
+<%@ include file="../common/head.jspf" %>
 <%@ include file="../common/foot.jspf" %>
