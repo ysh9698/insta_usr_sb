@@ -2,9 +2,12 @@ package com.sbs.untact.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public @AllArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
+public
 class Board {
 	private int id;
 	private String regDate;
