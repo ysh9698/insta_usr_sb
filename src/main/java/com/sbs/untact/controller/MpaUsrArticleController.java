@@ -1,22 +1,19 @@
 package com.sbs.untact.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.sbs.untact.dto.Article;
+import com.sbs.untact.dto.Board;
+import com.sbs.untact.dto.ResultData;
+import com.sbs.untact.service.ArticleService;
+import com.sbs.untact.util.Util;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sbs.untact.dto.Article;
-import com.sbs.untact.dto.Board;
-import com.sbs.untact.dto.ResultData;
-import com.sbs.untact.service.ArticleService;
-import com.sbs.untact.util.Util;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -51,7 +48,7 @@ public class MpaUsrArticleController {
 	}
 
 	@RequestMapping("/mpaUsr/article/doWrite")
-	public String doWrite(HttpServletRequest req, String title, String body) {
+	public String doWrite(HttpServletRequest req, int boardId, String title, String body) {
 
 		if (Util.isEmpty(title)) {
 			return msgAndBack(req, "제목을 입력해주세요.");
@@ -61,15 +58,17 @@ public class MpaUsrArticleController {
 			return msgAndBack(req, "내용을 입력해주세요.");
 		}
 
-		ResultData writeArticleRd = articleService.writeArticle(title, body);
+		int memberId = 3; // 임시
 
-		if (writeArticleRd.isFail()) {
+		ResultData writeArticleRd = articleService.writeArticle(boardId, memberId, title, body);
+
+		if ( writeArticleRd.isFail() ) {
 			return msgAndBack(req, writeArticleRd.getMsg());
 		}
 
 		String replaceUrl = "detail?id=" + writeArticleRd.getBody().get("id");
 		return msgAndReplace(req, writeArticleRd.getMsg(), replaceUrl);
-	}
+ 	}
 
 	@RequestMapping("/mpaUsr/article/doModify")
 	@ResponseBody
@@ -115,14 +114,14 @@ public class MpaUsrArticleController {
 	}
 
 	@RequestMapping("/mpaUsr/article/list")
-	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId,
-			String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
+	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword,
+			@RequestParam(defaultValue = "1") int page) {
 		Board board = articleService.getBoardById(boardId);
-
-		if (Util.isEmpty(searchKeywordType)) {
+		
+		if ( Util.isEmpty(searchKeywordType) ) {
 			searchKeywordType = "titleAndBody";
 		}
-
+		
 		if (board == null) {
 			return msgAndBack(req, boardId + "번 게시판이 존재하지 않습니다.");
 		}
@@ -130,9 +129,9 @@ public class MpaUsrArticleController {
 		req.setAttribute("board", board);
 
 		int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
-
-		if (searchKeyword == null || searchKeyword.trim().length() == 0) {
-
+		
+		if ( searchKeyword == null || searchKeyword.trim().length() == 0 ) {
+			
 		}
 
 		req.setAttribute("totalItemsCount", totalItemsCount);
@@ -146,8 +145,7 @@ public class MpaUsrArticleController {
 		req.setAttribute("page", page);
 		req.setAttribute("totalPage", totalPage);
 
-		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
-				itemsCountInAPage, page);
+		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, itemsCountInAPage, page);
 
 		req.setAttribute("articles", articles);
 
