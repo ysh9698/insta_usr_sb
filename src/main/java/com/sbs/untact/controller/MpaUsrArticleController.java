@@ -36,6 +36,19 @@ public class MpaUsrArticleController {
 		req.setAttribute("replaceUrl", replaceUrl);
 		return "common/redirect";
 	}
+	
+	@RequestMapping("/mpaUsr/article/write")
+	public String showWrite(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId) {
+		Board board = articleService.getBoardById(boardId);
+
+		if (board == null) {
+			return msgAndBack(req, boardId + "번 게시판이 존재하지 않습니다.");
+		}
+
+		req.setAttribute("board", board);
+
+		return "mpaUsr/article/write";
+	}
 
 	@RequestMapping("/mpaUsr/article/doWrite")
 	@ResponseBody
