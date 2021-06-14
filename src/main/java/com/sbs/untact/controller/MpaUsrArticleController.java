@@ -36,7 +36,7 @@ public class MpaUsrArticleController {
 		req.setAttribute("replaceUrl", replaceUrl);
 		return "common/redirect";
 	}
-	
+
 	@RequestMapping("/mpaUsr/article/write")
 	public String showWrite(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId) {
 		Board board = articleService.getBoardById(boardId);
@@ -51,18 +51,24 @@ public class MpaUsrArticleController {
 	}
 
 	@RequestMapping("/mpaUsr/article/doWrite")
-	@ResponseBody
-	public ResultData doWrite(String title, String body) {
+	public String doWrite(HttpServletRequest req, String title, String body) {
 
 		if (Util.isEmpty(title)) {
-			return new ResultData("F-1", "제목을 입력해주세요.");
+			return msgAndBack(req, "제목을 입력해주세요.");
 		}
 
 		if (Util.isEmpty(body)) {
-			return new ResultData("F-2", "내용을 입력해주세요.");
+			return msgAndBack(req, "내용을 입력해주세요.");
 		}
 
-		return articleService.writeArticle(title, body);
+		ResultData writeArticleRd = articleService.writeArticle(title, body);
+
+		if (writeArticleRd.isFail()) {
+			return msgAndBack(req, writeArticleRd.getMsg());
+		}
+
+		String replaceUrl = "detail?id=" + writeArticleRd.getBody().get("id");
+		return msgAndReplace(req, writeArticleRd.getMsg(), replaceUrl);
 	}
 
 	@RequestMapping("/mpaUsr/article/doModify")
@@ -109,14 +115,14 @@ public class MpaUsrArticleController {
 	}
 
 	@RequestMapping("/mpaUsr/article/list")
-	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword,
-			@RequestParam(defaultValue = "1") int page) {
+	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId,
+			String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
 		Board board = articleService.getBoardById(boardId);
-		
-		if ( Util.isEmpty(searchKeywordType) ) {
+
+		if (Util.isEmpty(searchKeywordType)) {
 			searchKeywordType = "titleAndBody";
 		}
-		
+
 		if (board == null) {
 			return msgAndBack(req, boardId + "번 게시판이 존재하지 않습니다.");
 		}
@@ -124,9 +130,9 @@ public class MpaUsrArticleController {
 		req.setAttribute("board", board);
 
 		int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
-		
-		if ( searchKeyword == null || searchKeyword.trim().length() == 0 ) {
-			
+
+		if (searchKeyword == null || searchKeyword.trim().length() == 0) {
+
 		}
 
 		req.setAttribute("totalItemsCount", totalItemsCount);
@@ -140,7 +146,8 @@ public class MpaUsrArticleController {
 		req.setAttribute("page", page);
 		req.setAttribute("totalPage", totalPage);
 
-		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, itemsCountInAPage, page);
+		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
+				itemsCountInAPage, page);
 
 		req.setAttribute("articles", articles);
 
