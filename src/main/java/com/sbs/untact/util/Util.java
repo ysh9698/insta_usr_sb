@@ -1,24 +1,17 @@
 package com.sbs.untact.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Util {
 	public static String getNowDateStr() {
@@ -146,10 +139,6 @@ public class Util {
 			String strData = (String) data;
 
 			return strData.trim().length() == 0;
-		} else if (data instanceof Integer) {
-			Integer integerData = (Integer) data;
-
-			return integerData != 0;
 		} else if (data instanceof List) {
 			List listData = (List) data;
 
@@ -160,17 +149,17 @@ public class Util {
 			return mapData.isEmpty();
 		}
 
-		return true;
+		return false;
 	}
 
 	public static <T> T ifEmpty(T data, T defaultValue) {
-		if ( isEmpty(data) ) {
+		if (isEmpty(data)) {
 			return defaultValue;
 		}
-		
+
 		return data;
 	}
-	
+
 	public static String getFileExtTypeCodeFromFileName(String fileName) {
 		String ext = getFileExtFromFileName(fileName).toLowerCase();
 
@@ -221,7 +210,7 @@ public class Util {
 
 		return ext;
 	}
-	
+
 	public static String getNowYearMonthDateStr() {
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy_MM");
 
@@ -231,7 +220,8 @@ public class Util {
 	}
 
 	public static List<Integer> getListDividedBy(String str, String divideBy) {
-		return Arrays.asList(str.split(divideBy)).stream().map(s -> Integer.parseInt(s.trim())).collect(Collectors.toList());
+		return Arrays.asList(str.split(divideBy)).stream().map(s -> Integer.parseInt(s.trim()))
+				.collect(Collectors.toList());
 	}
 
 	public static boolean delteFile(String filePath) {
@@ -239,66 +229,66 @@ public class Util {
 		if (ioFile.exists()) {
 			return ioFile.delete();
 		}
-		
+
 		return true;
 	}
-	
+
 	public static String numberFormat(int num) {
 		DecimalFormat df = new DecimalFormat("###,###,###");
-		
+
 		return df.format(num);
 	}
-	
+
 	public static String numberFormat(String numStr) {
 		return numberFormat(Integer.parseInt(numStr));
 	}
 
 	public static boolean allNumberString(String str) {
-		if ( str == null ) {
+		if (str == null) {
 			return false;
 		}
-		
-		if ( str.length() == 0 ) {
+
+		if (str.length() == 0) {
 			return true;
 		}
-		
-		for ( int i = 0; i < str.length(); i++ ) {
-			if ( Character.isDigit(str.charAt(i)) == false ) {
+
+		for (int i = 0; i < str.length(); i++) {
+			if (Character.isDigit(str.charAt(i)) == false) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
 	public static boolean startsWithNumberString(String str) {
-		if ( str == null ) {
+		if (str == null) {
 			return false;
 		}
-		
-		if ( str.length() == 0 ) {
+
+		if (str.length() == 0) {
 			return false;
 		}
-		
+
 		return Character.isDigit(str.charAt(0));
 	}
 
 	public static boolean isStandardLoginIdString(String str) {
-		if ( str == null ) {
+		if (str == null) {
 			return false;
 		}
-		
-		if ( str.length() == 0 ) {
+
+		if (str.length() == 0) {
 			return false;
 		}
-		
+
 		// 조건
 		// 5자 이상, 20자 이하로 구성
 		// 숫자로 시작 금지
 		// _, 알파벳, 숫자로만 구성
 		return Pattern.matches("^[a-zA-Z]{1}[a-zA-Z0-9_]{4,19}$", str);
 	}
-	
+
 	public static String getNewUrlRemoved(String uri, String paramName) {
 		String deleteStrStarts = paramName + "=";
 		int delStartPos = uri.indexOf(deleteStrStarts);
@@ -341,5 +331,17 @@ public class Util {
 
 	public static String getNewUriAndEncoded(String uri, String paramName, String pramValue) {
 		return getUrlEncoded(getNewUrl(uri, paramName, pramValue));
+	}
+
+	public static String msgAndBack(HttpServletRequest req, String msg) {
+		req.setAttribute("msg", msg);
+		req.setAttribute("historyBack", true);
+		return "common/redirect";
+	}
+
+	public static String msgAndReplace(HttpServletRequest req, String msg, String replaceUrl) {
+		req.setAttribute("msg", msg);
+		req.setAttribute("replaceUrl", replaceUrl);
+		return "common/redirect";
 	}
 }
