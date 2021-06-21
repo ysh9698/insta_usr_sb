@@ -2,15 +2,19 @@ package com.sbs.untact.dto;
 
 import com.sbs.untact.util.Util;
 
+import java.util.Map;
+
 public class Rq {
     private String currentUrl;
     private String currentUri;
     private Member loginedMember;
+    private Map<String, String> paramMap;
 
-    public Rq(Member loginedMember, String currentUri) {
+    public Rq(Member loginedMember, String currentUri, Map<String, String> paramMap) {
         this.loginedMember = loginedMember;
         this.currentUrl = currentUri.split("\\?")[0];
         this.currentUri = currentUri;
+        this.paramMap = paramMap;
     }
 
     public boolean isLogined() {
@@ -49,7 +53,7 @@ public class Rq {
         String afterLoginUri;
 
         if (isLoginPage()) {
-            afterLoginUri = "";
+            afterLoginUri = Util.getUriEncoded(paramMap.get("afterLoginUri"));
         } else {
             afterLoginUri = getEncodedCurrentUri();
         }
