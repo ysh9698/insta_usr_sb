@@ -2,6 +2,7 @@ package com.sbs.untact.controller;
 
 import com.sbs.untact.dto.Member;
 import com.sbs.untact.dto.ResultData;
+import com.sbs.untact.dto.Rq;
 import com.sbs.untact.service.MemberService;
 import com.sbs.untact.util.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,29 @@ import javax.servlet.http.HttpSession;
 public class MpaUsrMemberController {
     @Autowired
     private MemberService memberService;
+
+    @RequestMapping("/mpaUsr/member/modify")
+    public String showModify(HttpServletRequest req) {
+        return "mpaUsr/member/modify";
+    }
+
+    @RequestMapping("/mpaUsr/member/doModify")
+    public String doModify(HttpServletRequest req, String loginPw, String name, String
+            nickname, String cellphoneNo, String email) {
+
+        if ( loginPw != null && loginPw.trim().length() == 0 ) {
+            loginPw = null;
+        }
+
+        int id = ((Rq)req.getAttribute("rq")).getLoginedMemberId();
+        ResultData modifyRd = memberService.modify(id, loginPw, name, nickname, cellphoneNo, email);
+
+        if (modifyRd.isFail()) {
+            return Util.msgAndBack(req, modifyRd.getMsg());
+        }
+
+        return Util.msgAndReplace(req, modifyRd.getMsg(), "/");
+    }
 
     @RequestMapping("/mpaUsr/member/mypage")
     public String showMypage(HttpServletRequest req) {
