@@ -1,10 +1,8 @@
 package com.sbs.untact.controller;
 
-import com.sbs.untact.dto.Article;
-import com.sbs.untact.dto.Board;
-import com.sbs.untact.dto.ResultData;
-import com.sbs.untact.dto.Rq;
+import com.sbs.untact.dto.*;
 import com.sbs.untact.service.ArticleService;
+import com.sbs.untact.service.ReplyService;
 import com.sbs.untact.util.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +21,13 @@ public class MpaUsrArticleController {
     @Autowired
     private ArticleService articleService;
 
+    @Autowired
+    private ReplyService replyService;
+
     @RequestMapping("/mpaUsr/article/detail")
     public String showDetail(HttpServletRequest req, int id) {
         Article article = articleService.getForPrintArticleById(id);
+        List<Reply> replies = replyService.getForPrintRepliesByRelTypeCodeAndRelId("article", id);
 
         if (article == null) {
             return Util.msgAndBack(req, id + "번 게시물이 존재하지 않습니다.");
@@ -33,6 +35,7 @@ public class MpaUsrArticleController {
 
         Board board = articleService.getBoardById(article.getBoardId());
 
+        req.setAttribute("replies", replies);
         req.setAttribute("article", article);
         req.setAttribute("board", board);
 

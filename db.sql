@@ -133,7 +133,7 @@ loginId = 'user1',
 loginPw = 'user1',
 `name` = '유저1이름',
 nickname = '유저1별명',
-email = 'ysh969897@gmail.com',
+email = 'jangka512@gmail.com',
 cellphoneNo = '01012341234';
 
 # 회원 테스트 데이터 생성
@@ -145,7 +145,7 @@ loginId = 'user2',
 loginPw = 'user2',
 `name` = '유저2이름',
 nickname = '유저2별명',
-email = 'ysh969897@gmail.com',
+email = 'jangka512@gmail.com',
 cellphoneNo = '01012341234';
 
 # 회원 테스트 데이터 생성
@@ -157,7 +157,7 @@ loginId = 'user3',
 loginPw = 'user3',
 `name` = '유저3이름',
 nickname = '유저3별명',
-email = 'ysh969897@gmail.com',
+email = 'jangka512@gmail.com',
 cellphoneNo = '01012341234';
 
 # 로그인비번 칼럼의 길이를 100으로 늘림
@@ -198,6 +198,22 @@ CREATE TABLE `reply` (
     updateDate DATETIME NOT NULL COMMENT '수정날짜',
     relTypeCode CHAR(50) NOT NULL COMMENT '관련 데이터 타입',
     relId INT(10) UNSIGNED NOT NULL COMMENT '관련 데이터 ID',
+    parentId INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '부모댓글 ID',
     memberId INT(10) UNSIGNED NOT NULL COMMENT '회원 ID',
-    `body` TEXT NOT NULL COMMENT '내용'
+    delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '삭제여부',
+    delDate DATETIME COMMENT '삭제날짜',
+    `body` TEXT NOT NULL COMMENT '내용',
+    blindStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '블라인드여부',
+    blindDate DATETIME COMMENT '블라인드날짜',
+    hitCount INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '조회수',
+    repliesCount INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '댓글수',
+    likeCount INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '좋아요수',
+    dislikeCount INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '싫어요수'
 );
+
+# 특정 데이터에 관련된 댓글을 읽어는 속도를 빠르게 하기위해
+# 인덱스를 건다.
+ALTER TABLE `reply` ADD KEY (`relTypeCode`, `relId`);
+
+
+SELECT * FROM reply
