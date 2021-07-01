@@ -3,139 +3,69 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle"
-	value="<span><i class='fas fa-user-plus'></i></span> <span>MEMBER MODIFY</span>" />
+	value="<span><i class='far fa-clipboard'></i></span> <span>${board.name} REPLY MODIFY</span>" />
 
 <%@ include file="../common/head.jspf"%>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
-
 <script>
-let MemberModify__submitFormDone = false;
-function MemberModify__submitForm(form) {
-    if ( MemberModify__submitFormDone ) {
+let ReplyModify__submitFormDone = false;
+function ReplyModify__submitForm(form) {
+    if ( ReplyModify__submitFormDone ) {
         return;
     }
-    form.loginPwInput.value = form.loginPwInput.value.trim();
-    if ( form.loginPwInput.value.length > 0 ) {
-        form.loginPwConfirm.value = form.loginPwConfirm.value.trim();
-        if ( form.loginPwConfirm.value.length == 0 ) {
-            alert('로그인비밀번호 확인을 입력해주세요.');
-            form.loginPwConfirm.focus();
-            return;
-        }
-        if ( form.loginPwInput.value != form.loginPwConfirm.value ) {
-            alert('로그인비밀번호가 일치하지 않습니다.');
-            form.loginPwConfirm.focus();
-            return;
-        }
-    }
-    form.name.value = form.name.value.trim();
-    if ( form.name.value.length == 0 ) {
-        alert('이름을 입력해주세요.');
-        form.name.focus();
+    form.body.value = form.body.value.trim();
+    if ( form.body.value.length == 0 ) {
+        alert('내용을 입력해주세요.');
+        form.body.focus();
         return;
-    }
-    form.nickname.value = form.nickname.value.trim();
-    if ( form.nickname.value.length == 0 ) {
-        alert('별명을 입력해주세요.');
-        form.nickname.focus();
-        return;
-    }
-    form.cellphoneNo.value = form.cellphoneNo.value.trim();
-    if ( form.cellphoneNo.value.length == 0 ) {
-        alert('휴대전화번호를 입력해주세요.');
-        form.cellphoneNo.focus();
-        return;
-    }
-    form.email.value = form.email.value.trim();
-    if ( form.email.value.length == 0 ) {
-        alert('이메일을 입력해주세요.');
-        form.email.focus();
-        return;
-    }
-    if ( form.loginPwInput.value.length > 0 ) {
-        form.loginPw.value = sha256(form.loginPwInput.value);
-        form.loginPwInput.value = '';
-        form.loginPwConfirm.value = '';
     }
     form.submit();
-    MemberModify__submitFormDone = true;
+    ReplyModify__submitFormDone = true;
 }
 </script>
 
-<div class="section section-member-modify px-2">
+<div class="section section-article-write">
 	<div class="container mx-auto">
-	    <form method="POST" action="doModify" onsubmit="MemberModify__submitForm(this); return false;">
-	        <input type="hidden" name="checkPasswordAuthCode" value="${param.checkPasswordAuthCode}">
-	        <input type="hidden" name="loginPw">
+	    <form method="POST" action="doModify" onsubmit="ReplyModify__submitForm(this); return false;">
+	        <input type="hidden" name="id" value="${reply.id}" />
+	        <input type="hidden" name="redirectUri" value="${param.redirectUri}" />
+
 	        <div class="form-control">
                 <label class="label">
-                    로그인아이디
+                    게시글 번호
                 </label>
-                <div class="plain-text">
-                  ${rq.loginedMember.loginId}
+                <div>
+                    ${reply.relId}
                 </div>
             </div>
 
             <div class="form-control">
                 <label class="label">
-                    로그인비밀번호
+                    게시글 제목
                 </label>
-                <input class="input input-bordered w-full" type="password" maxlength="30" name="loginPwInput" placeholder="로그인비밀번호를 입력해주세요." />
+                <div>
+                    ${title}
+                </div>
             </div>
 
-            <div class="form-control">
+	        <div class="form-control">
                 <label class="label">
-                    로그인비밀번호 확인
+                    내용
                 </label>
-                <input class="input input-bordered w-full" type="password" maxlength="30" name="loginPwConfirm" placeholder="로그인비밀번호 확인을 입력해주세요." />
-            </div>
-
-            <div class="form-control">
-                <label class="label">
-                    이름
-                </label>
-                <input value="${rq.loginedMember.name}" class="input input-bordered w-full" type="text" maxlength="30" name="name" placeholder="이름을 입력해주세요." />
-            </div>
-
-            <div class="form-control">
-                <label class="label">
-                    별명
-                </label>
-                <input value="${rq.loginedMember.nickname}" class="input input-bordered w-full" type="text" maxlength="30" name="nickname" placeholder="별명을 입력해주세요." />
-            </div>
-
-            <div class="form-control">
-                <label class="label">
-                    휴대전화번호
-                </label>
-                <input value="${rq.loginedMember.cellphoneNo}" class="input input-bordered w-full" type="tel" maxlength="30" name="cellphoneNo" placeholder="휴대전화번호를 입력해주세요." />
-            </div>
-
-            <div class="form-control">
-                <label class="label">
-                    이메일
-                </label>
-                <input value="${rq.loginedMember.email}" class="input input-bordered w-full" type="email" maxlength="50" name="email" placeholder="이메일을 입력해주세요." />
+                <textarea class="textarea textarea-bordered w-full h-24" placeholder="내용을 입력해주세요." name="body" maxlength="2000">${reply.body}</textarea>
             </div>
 
             <div class="mt-4 btn-wrap gap-1">
                 <button type="submit" href="#" class="btn btn-primary btn-sm mb-1">
-                    <span><i class="fas fa-user-plus"></i></span>
+                    <span><i class="far fa-edit"></i></span>
                     &nbsp;
                     <span>수정</span>
                 </button>
 
-                <a href="../member/mypage" class="btn btn-link btn-sm mb-1">
-                    <span><i class="fas fa-home"></i></span>
+                <a href="#" onclick="history.back();" class="btn btn-sm mb-1" title="자세히 보기">
+                    <span><i class="fas fa-list"></i></span>
                     &nbsp;
-                    <span>마이페이지</span>
-                </a>
-
-                <a href="/" class="btn btn-link btn-sm mb-1">
-                    <span><i class="fas fa-home"></i></span>
-                    &nbsp;
-                    <span>홈</span>
+                    <span>리스트</span>
                 </a>
             </div>
 	    </form>
