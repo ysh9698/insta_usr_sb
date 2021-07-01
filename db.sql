@@ -133,7 +133,7 @@ loginId = 'user1',
 loginPw = 'user1',
 `name` = '유저1이름',
 nickname = '유저1별명',
-email = 'jangka512@gmail.com',
+email = 'ysh969897@gmail.com',
 cellphoneNo = '01012341234';
 
 # 회원 테스트 데이터 생성
@@ -145,7 +145,7 @@ loginId = 'user2',
 loginPw = 'user2',
 `name` = '유저2이름',
 nickname = '유저2별명',
-email = 'jangka512@gmail.com',
+email = 'ysh969897@gmail.com',
 cellphoneNo = '01012341234';
 
 # 회원 테스트 데이터 생성
@@ -157,7 +157,7 @@ loginId = 'user3',
 loginPw = 'user3',
 `name` = '유저3이름',
 nickname = '유저3별명',
-email = 'jangka512@gmail.com',
+email = 'ysh969897@gmail.com',
 cellphoneNo = '01012341234';
 
 # 로그인비번 칼럼의 길이를 100으로 늘림
@@ -227,4 +227,41 @@ INSERT INTO attr (
 	expireDate
 )
 SELECT NOW(), NOW(), 'member', id, 'extra', 'needToChangePassword', 0, NULL
-FROM `member`
+FROM `member`;
+
+# 댓글 테스트 데이터 생성
+## 1번 댓글 생성
+INSERT INTO `reply`
+SET regDate = NOW(),
+updateDate = NOW(),
+relTypeCode = 'article',
+relId = 1,
+memberId = 1,
+`body` = '댓글1';
+
+## 2번 댓글 생성
+INSERT INTO `reply`
+SET regDate = NOW(),
+updateDate = NOW(),
+relTypeCode = 'article',
+relId = 1,
+memberId = 1,
+`body` = '댓글2';
+
+## 3번 댓글 생성
+INSERT INTO `reply`
+SET regDate = NOW(),
+updateDate = NOW(),
+relTypeCode = 'article',
+relId = 1,
+memberId = 2,
+`body` = '댓글3';
+
+## 4번 댓글 생성
+INSERT INTO `reply`
+SET regDate = NOW(),
+updateDate = NOW(),
+relTypeCode = 'article',
+relId = 2,
+memberId = 2,
+`body` = '댓글4';
