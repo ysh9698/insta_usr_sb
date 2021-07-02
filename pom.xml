@@ -10,11 +10,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.sbs</groupId>
-    <artifactId>untact</artifactId>
+    <artifactId>untactTeacher</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>insta</name>
-    <description>untact</description>
+    <description>untactTeacher</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -99,6 +99,13 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1.1-jre</version>
         </dependency>
     </dependencies>
 
