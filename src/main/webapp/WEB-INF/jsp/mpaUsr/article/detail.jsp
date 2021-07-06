@@ -123,6 +123,7 @@
                     form.body.focus();
                     return;
                 }
+                
                 form.submit();
                 ReplyModify__submitFormDone = true;
             }
