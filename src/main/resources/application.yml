@@ -29,7 +29,7 @@ spring:
 mybatis:
   type-aliases-package: com.sbs.untact.dto
 custom:
-  genFileDirpath: C:/work/insta-usb-sb-file
+  genFileDirPath: C:/work/insta-usb-sb-file
   needToChangePasswordFreeDays: 50
   siteMainUri: http://localhost:8024/
   siteName: 인스타
